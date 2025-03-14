@@ -3,7 +3,7 @@
 Nama : Muhammad Aufa Farabi
 NIM : 13523023
 
-# Basic Network Configuration - Packet Tracer
+# Basic Device Configuration - Packet Tracer
 
 ## Addressing Table
 | Device       | Interface | IPv4 Address       | IPv6 Address                  | Default Gateway |
