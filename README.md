@@ -1,79 +1,77 @@
 # Day4-Training-ARC-13523023
 
-# **Konfigurasi Jaringan Cisco Packet Tracer**
+Nama : Muhammad Aufa Farabi
+NIM : 13523023
 
----
+# Basic Network Configuration - Packet Tracer
 
-## **Topologi Jaringan**
-### **Devices:**
-- **Router:** Floor14
-- **Switch:** Room-146, Floor14-Switch
-- **PC:** Manager-A, Reception-A, Manager-B, Reception-B
+## Addressing Table
+| Device       | Interface | IPv4 Address       | IPv6 Address                  | Default Gateway |
+|-------------|----------|--------------------|-------------------------------|----------------|
+| Floor14     | G0/0     | 10.10.10.1/24      | 2001:DB8:ACAD:100::1/64       | N/A            |
+|             | G0/1     | 10.10.11.1/24      | 2001:DB8:ACAD:200::1/64       | N/A            |
+| Room-145    | VLAN 1   | 10.10.10.100/24    | -                             | 10.10.10.1     |
+| Room-146    | VLAN 1   | 10.10.11.100/24    | -                             | 10.10.11.1     |
+| Manager-A   | NIC      | 10.10.10.101/24    | 2001:DB8:ACAD:100::50/64      | FE80::2        |
+| Reception-A | NIC      | 10.10.10.102/24    | 2001:DB8:ACAD:100::60/64      | FE80::2        |
+| Manager-B   | NIC      | 10.10.11.101/24    | 2001:DB8:ACAD:200::50/64      | FE80::3        |
+| Reception-B | NIC      | 10.10.11.102/24    | 2001:DB8:ACAD:200::W60/64      | FE80::3        |
 
-### **Alamat IP**
-#### **IPv4 Addressing:**
-- **Manager-A:** 10.10.10.101/24 (Gateway: 10.10.10.1)
-- **Reception-A:** 10.10.10.102/24 (Gateway: 10.10.10.1)
-- **Manager-B:** 10.10.11.101/24 (Gateway: 10.10.11.1)
-- **Reception-B:** 10.10.11.102/24 (Gateway: 10.10.11.1)
+## Configuration Details
 
-#### **IPv6 Addressing:**
-- **Manager-A:** 2001:DB8:ACAD:100::50/64 (Gateway: FE80::2)
-- **Reception-A:** 2001:DB8:ACAD:100::60/64 (Gateway: FE80::3)
-- **Manager-B:** 2001:DB8:ACAD:200::50/64 (Gateway: FE80::2)
-- **Reception-B:** 2001:DB8:ACAD:200::60/64 (Gateway: FE80::3)
+### Router Configuration (Floor14)
+```
+enable
+configure terminal
+hostname Floor14
 
----
-
-## **Konfigurasi Router (Floor14)**
-```cisco
-! Konfigurasi Interface
 interface GigabitEthernet0/0
  ip address 10.10.10.1 255.255.255.0
  ipv6 address 2001:DB8:ACAD:100::1/64
  no shutdown
-!
+ description Connection to Room-145 Switch
+
 interface GigabitEthernet0/1
  ip address 10.10.11.1 255.255.255.0
  ipv6 address 2001:DB8:ACAD:200::1/64
  no shutdown
-!
-ip route 0.0.0.0 0.0.0.0 10.10.10.1
-ipv6 route ::/0 2001:DB8:ACAD:100::1
+ description Connection to Room-146 Switch
+
+exit
 ```
 
----
+### Switch Configuration (Room-146)
+```
+enable
+configure terminal
+hostname Room-146
 
-## **Konfigurasi VLAN pada Switch (Room-146 & Floor14-Switch)**
-```cisco
-! VLAN Setup
-vlan 10
- name MANAGEMENT
-vlan 20
- name RECEPTION
-!
-! Konfigurasi Trunking
-interface GigabitEthernet0/1
- switchport mode trunk
- switchport trunk allowed vlan 10,20
+interface VLAN 1
+ ip address 10.10.11.100 255.255.255.0
  no shutdown
+ description VLAN Interface for Room-146
+
+ip default-gateway 10.10.11.1
+exit
 ```
 
----
-
-## **Password Security**
-```cisco
-! Password untuk akses
-enable secret cisco
+### Security Configuration
+```
+enable secret class
 line console 0
  password cisco
  login
-!
+ exit
+
 line vty 0 4
  password cisco
  login
-!
+ exit
+
 service password-encryption
 ```
 
----
+### Banner Configuration
+```
+banner motd # Unauthorized access is prohibited! #
+```
